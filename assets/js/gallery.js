@@ -25,11 +25,11 @@
 
   var FACETS =
     '<svg class="card__facets" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
-      '<polygon points="0,0 60,0 0,56" fill="#fff" fill-opacity="0.14"/>' +
-      '<polygon points="100,0 100,48 52,0" fill="#fff" fill-opacity="0.10"/>' +
-      '<polygon points="0,100 0,52 48,100" fill="#fff" fill-opacity="0.08"/>' +
-      '<polygon points="100,100 100,50 50,100" fill="#fff" fill-opacity="0.12"/>' +
-      '<polygon points="50,28 82,76 18,76" fill="#fff" fill-opacity="0.07"/>' +
+      '<polygon class="facet facet--tl" points="0,0 60,0 0,56" fill="#fff" fill-opacity="0.14"/>' +
+      '<polygon class="facet facet--tr" points="100,0 100,48 52,0" fill="#fff" fill-opacity="0.10"/>' +
+      '<polygon class="facet facet--bl" points="0,100 0,52 48,100" fill="#fff" fill-opacity="0.08"/>' +
+      '<polygon class="facet facet--br" points="100,100 100,50 50,100" fill="#fff" fill-opacity="0.12"/>' +
+      '<polygon class="facet facet--center" points="50,28 82,76 18,76" fill="#fff" fill-opacity="0.07"/>' +
     '</svg>';
   var ARROW =
     '<svg class="card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +

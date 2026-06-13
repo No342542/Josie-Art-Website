@@ -112,6 +112,10 @@ strong{ font-weight:600; }
 .field{ display:flex; flex-direction:column; gap:6px; }
 .field[hidden]{ display:none; }   /* author .field{display:flex} would otherwise beat the hidden attr */
 .field--sub{ margin-top:4px; }
+.check{ display:flex; align-items:flex-start; gap:9px; margin-top:10px; cursor:pointer; font-size:13.5px; color:var(--ink); line-height:1.4; }
+.check[hidden]{ display:none; }
+.check input{ margin:2px 0 0; width:16px; height:16px; flex:0 0 auto; accent-color:var(--accent); cursor:pointer; }
+.check small{ display:block; color:var(--soft); font-size:11.5px; margin-top:2px; }
 .field__label small{ font-weight:400; text-transform:none; letter-spacing:.3px; color:var(--soft); }
 .field__label{ font-family:var(--disp); font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--soft); }
 .input{ font-family:var(--ui); font-size:14.5px; color:var(--ink); background:#fff; border:1px solid var(--line);

@@ -30,7 +30,14 @@
   var image = '<div class="detail__media"><img class="detail__img" src="' + attr(a.image) + '" alt="' + attr(a.title) + '"></div>';
   var vid = hasVideo ? paintBlock(a) : '';
   var yt = a.youtube ? youtube(a.youtube) : '';
+  // "Additional art" (related) lives in the media column alongside the main art +
+  // speed-paint. relatedUnderMain=true → directly under the main art (above the
+  // speed-paint); default → under the speed-paint (and just under the main art
+  // when there's no video, since the speed-paint slot is empty).
   var related = a.related ? relatedBlock(a.related) : '';
+  var relAbove = (related && a.relatedUnderMain) ? related : '';
+  var relBelow = (related && !a.relatedUnderMain) ? related : '';
+  var ig = instagramLink(a);                               // per-piece IG icon, shown under the date
   var title = '<h1 class="detail__title">' + esc(a.title) + '</h1>';
   var date = '<div class="detail__date">' + esc(a.date || '') +
     (a.category ? '&nbsp;&middot;&nbsp;' + esc(a.category) : '') + '</div>';
@@ -43,12 +50,12 @@
   if (split) {
     root.innerHTML = back +
       '<div class="detail__cols">' +
-        '<div class="detail__media-col">' + image + vid + yt + '</div>' +
-        '<div class="detail__info-col">' + title + date + text + related + '</div>' +
+        '<div class="detail__media-col">' + image + relAbove + vid + relBelow + yt + '</div>' +
+        '<div class="detail__info-col">' + title + date + ig + text + '</div>' +
       '</div>' + nav;
   } else {
     root.innerHTML = back + image +
-      '<div class="detail__meta">' + title + date + '</div>' + vid + yt + text + related + nav;
+      '<div class="detail__meta">' + title + date + ig + '</div>' + relAbove + vid + relBelow + yt + text + nav;
   }
 
   if (hasVideo) wirePlayer();
@@ -73,8 +80,11 @@
         'poster="' + attr(a.image) + '"><source src="' + attr(a.video) + '" type="video/mp4"></video>' +
       '<button class="player__btn player__play" id="playBtn" aria-label="Play speed-paint">' +
         '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg></button>' +
-      '<button class="player__btn player__stop" id="stopBtn" aria-label="Stop">' +
-        '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></button>' +
+      '<button class="player__btn player__toggle" id="toggleBtn" aria-label="Pause">' +
+        '<svg class="player__ico player__ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+          '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>' +
+        '<svg class="player__ico player__ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+          '<path d="M7 5v14l12-7z"/></svg></button>' +
       '</div>';
   }
 
@@ -82,15 +92,19 @@
     var wrap = document.getElementById('player');
     var video = document.getElementById('paint');
     var playBtn = document.getElementById('playBtn');
-    var stopBtn = document.getElementById('stopBtn');
-
-    function showPlay() { wrap.classList.remove('is-playing'); playBtn.hidden = false; }
-    function hidePlay() { wrap.classList.add('is-playing'); playBtn.hidden = true; }
+    var toggleBtn = document.getElementById('toggleBtn');
 
     playBtn.addEventListener('click', function () { video.play(); });
-    stopBtn.addEventListener('click', function () { video.pause(); video.currentTime = 0; });
-    video.addEventListener('play', hidePlay);
-    video.addEventListener('pause', showPlay);   // fires when Stop pauses (loop never "ends")
+    toggleBtn.addEventListener('click', function () { if (video.paused) video.play(); else video.pause(); });
+    video.addEventListener('play', function () {
+      wrap.classList.add('is-started', 'is-playing');   // big center play hides; corner toggle shows "pause"
+      playBtn.hidden = true;
+      toggleBtn.setAttribute('aria-label', 'Pause');
+    });
+    video.addEventListener('pause', function () {
+      wrap.classList.remove('is-playing');              // keep is-started so the corner toggle stays visible
+      toggleBtn.setAttribute('aria-label', 'Play');     // it now shows a "play" glyph to resume
+    });
     video.addEventListener('error', function () {
       playBtn.hidden = true;
       var note = document.createElement('div');
@@ -130,6 +144,19 @@
       '<a class="relcard" href="' + attr(href) + '"' + extra + '>' +
       '<span class="relcard__img"><img src="' + attr(img) + '" alt="' + attr(title) + '"></span>' +
       '<span class="relcard__title">' + esc(title) + '</span></a></div>';
+  }
+
+  /* ---------- per-piece Instagram icon (under the date) ----------
+     Uses this piece's own link if Josie set one; otherwise falls back to the
+     site Instagram so the icon shows on every piece. No real link → no icon. */
+  function instagramLink(a) {
+    var url = (a.instagram && String(a.instagram).trim()) || S.instagram || '';
+    if (!url || /REPLACE_ME/.test(url)) return '';
+    return '<a class="detail__ig" href="' + attr(url) + '" target="_blank" rel="noopener" ' +
+      'aria-label="View on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/>' +
+      '<circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/>' +
+      '</svg></a>';
   }
 
   function esc(s) {

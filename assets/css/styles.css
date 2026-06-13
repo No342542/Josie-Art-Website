@@ -210,6 +210,14 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
   font-family:var(--font-display); font-size:12px; letter-spacing:2px;
   color:var(--ink-soft); margin-top:9px;
 }
+/* per-piece Instagram icon, shown just under the date */
+.detail__ig{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:34px; height:34px; margin-top:12px;
+  color:var(--ink-soft); transition:color .25s var(--ease), transform .25s var(--ease);
+}
+.detail__ig:hover{ color:var(--accent); transform:translateY(-1px); }
+.detail__ig svg{ width:22px; height:22px; }
 .detail__text{
   max-width:620px; margin:18px auto 0; text-align:center;
   color:var(--ink-soft); font-size:19px; line-height:1.75;
@@ -271,13 +279,18 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 }
 .player__play svg{ width:30px; height:30px; margin-left:4px; }
 .player__play:hover{ background:rgba(20,18,16,.6); transform:scale(1.04); }
-.player__stop{
-  top:16px; right:16px; width:42px; height:42px; border-radius:50%;
-  background:rgba(20,18,16,.4); opacity:0;
+/* play / pause toggle — bottom-left; appears once the speed-paint has started,
+   and swaps its glyph between pause (while playing) and play (while paused). */
+.player__toggle{
+  left:16px; bottom:16px; width:42px; height:42px; border-radius:50%;
+  background:rgba(20,18,16,.45); opacity:0; pointer-events:none;
 }
-.player__stop svg{ width:16px; height:16px; }
-.player.is-playing .player__stop{ opacity:1; }
-.player.is-playing:hover .player__stop{ opacity:1; }
+.player__toggle svg{ width:16px; height:16px; }
+.player__toggle:hover{ background:rgba(20,18,16,.62); }
+.player.is-started .player__toggle{ opacity:1; pointer-events:auto; }
+.player__ico{ display:none; }
+.player.is-playing .player__ico-pause{ display:block; }
+.player.is-started:not(.is-playing) .player__ico-play{ display:block; }
 .player .player__play[hidden]{ display:none; }
 .player__note{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;

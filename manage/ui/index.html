@@ -99,7 +99,14 @@
             <button class="link link--muted" id="eRelatedRemove" type="button">Remove uploaded image</button>
           </div>
         </div>
+        <label class="check" id="eRelatedPosField" hidden>
+          <input type="checkbox" id="eRelatedUnderMain">
+          <span>Show directly under the main art
+            <small>otherwise it appears under the speed‑paint (or under the main art if there's no speed‑paint)</small></span>
+        </label>
       </div>
+      <label class="field"><span class="field__label">Instagram link for this piece <small>· optional</small></span>
+        <input class="input" id="eInstagram" type="url" placeholder="https://www.instagram.com/p/…"></label>
       <div class="drawer__foot">
         <a class="btn btn--ghost" id="eDownload" download>⤓ Download</a>
         <button class="btn btn--danger" id="eTrash" type="button">🗑 Move to Trash</button>

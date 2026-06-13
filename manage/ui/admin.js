@@ -319,7 +319,8 @@
     if (currentTab !== 'All') switchTab('All');     // new uploads belong to the master list
     imgs.forEach(function(f){
       var art = { id:'', title:f.name.replace(/\.[^.]+$/,''), date:String(new Date().getFullYear()),
-        category:'', image:'', text:'', video:null, videoTitle:null, youtube:null, related:null };
+        category:'', image:'', text:'', video:null, videoTitle:null, youtube:null,
+        related:null, relatedUnderMain:false, instagram:null };
       ALL_ARTS.push(art);
       var card = buildCard(art); card.classList.add('card--uploading'); grid.appendChild(card); updateEmpty();
       setStatus('Uploading…','saving');
@@ -356,6 +357,7 @@
     $('eVideoField').style.display = HAS_VIDEO ? '' : 'none';
     renderEditVideo(a);
     if ($('eYoutube')) $('eYoutube').value = a.youtube || '';
+    if ($('eInstagram')) $('eInstagram').value = a.instagram || '';
     renderRelated(a);
     var dl=$('eDownload'); dl.href = a.image?'/'+a.image:'#'; dl.setAttribute('download', basename(a.image));
     showDrawer('editDrawer');
@@ -384,6 +386,8 @@
     });
     if (grp.children.length) sel.appendChild(grp);
     if (!isImg && !curId) sel.value = '';
+    var posField = $('eRelatedPosField');                  // the "under main art" checkbox only matters with a related art
+    if (posField){ posField.hidden = !(isImg || curId); $('eRelatedUnderMain').checked = !!a.relatedUnderMain; }
     renderRelatedUpload(a);
   }
   function renderRelatedUpload(a){
@@ -416,6 +420,12 @@
   });
   if ($('eRelatedRemove')) $('eRelatedRemove').addEventListener('click', function(){
     if(!editing) return; editing._art.related = null; renderRelated(editing._art); scheduleSave();
+  });
+  if ($('eRelatedUnderMain')) $('eRelatedUnderMain').addEventListener('change', function(){
+    if(!editing) return; editing._art.relatedUnderMain = this.checked; scheduleSave();
+  });
+  if ($('eInstagram')) $('eInstagram').addEventListener('input', function(){
+    if(!editing) return; editing._art.instagram = this.value.trim() || null; scheduleSave();
   });
   // The danger button means different things per page: delete site-wide (All) vs
   // remove from just this gallery (a subcategory).
@@ -523,7 +533,8 @@
   function cleanArts(){
     return ALL_ARTS.map(function(a){ return { id:a.id, title:a.title||'', date:a.date||'', category:a.category||'',
         image:a.image, text:a.text||'', video:a.video||null, videoTitle:(a.videoTitle && String(a.videoTitle).trim())||null,
-        youtube:a.youtube||null, related:a.related||null }; })
+        youtube:a.youtube||null, related:a.related||null, relatedUnderMain:!!a.relatedUnderMain,
+        instagram:(a.instagram && String(a.instagram).trim())||null }; })
       .filter(function(a){ return a.image; });
   }
   function saveNow(){

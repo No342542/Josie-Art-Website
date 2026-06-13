@@ -19,6 +19,21 @@ if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/n
   fi
 fi
 
+# 0b) Show this launcher's custom icon. macOS keeps a custom file icon in the file's
+#     resource fork, which git does NOT track and strips whenever it rewrites the file
+#     (e.g. on an update). So we (re)apply the icon from the bundled PNG whenever it's
+#     missing, using Swift (ships with the Command Line Tools). Runs only when needed,
+#     so normal launches stay instant.
+ICON="manage-josie-icon.png"
+SELF="$PWD/$(basename "$0")"
+if [ -f "$ICON" ] && command -v swift >/dev/null 2>&1 && ! xattr "$SELF" 2>/dev/null | grep -q com.apple.ResourceFork; then
+  swift - "$SELF" "$ICON" >/dev/null 2>&1 <<'SWIFT'
+import AppKit
+let a = CommandLine.arguments
+NSWorkspace.shared.setIcon(NSImage(contentsOfFile: a[2]), forFile: a[1], options: [])
+SWIFT
+fi
+
 # 1) Free the port: stop a previous copy of this server still holding it, so a
 #    re-launch never fails with "address already in use".
 STALE=$(lsof -ti tcp:$PORT 2>/dev/null)

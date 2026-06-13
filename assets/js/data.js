@@ -46,6 +46,7 @@ window.SITE = {
 
 window.ARTWORKS = [
   {"id": "img_3346-1", "title": "IMG_3346", "date": "2026", "category": "", "image": "assets/img/artwork/img_3346-1.jpg", "text": "", "video": null, "videoTitle": null, "youtube": null, "related": null, "relatedUnderMain": false, "instagram": null},
+  {"id": "screenshot-2026-04-25-at-11.08.38-pm", "title": "Screenshot 2026-04-25 at 11.08.38 PM", "date": "2026", "category": "", "image": "assets/img/artwork/screenshot-2026-04-25-at-11.08.38-pm.png", "text": "", "video": null, "videoTitle": null, "youtube": null, "related": null, "relatedUnderMain": false, "instagram": null},
   {"id": "josie-03", "title": "Wildflower", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-03.svg", "text": "Add a short note about “Wildflower” here.", "video": null, "videoTitle": null, "youtube": null, "related": null, "relatedUnderMain": false, "instagram": null},
   {"id": "josie-04", "title": "Stargazer", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-04.svg", "text": "Add a short note about “Stargazer” here.", "video": "assets/video/josie-04.mp4", "videoTitle": null, "youtube": null, "related": null, "relatedUnderMain": false, "instagram": null},
   {"id": "josie-06", "title": "Quick Study", "date": "2025", "category": "Sketch", "image": "assets/img/artwork/josie-06.svg", "text": "Add a short note about “Quick Study” here.", "video": null, "videoTitle": null, "youtube": null, "related": "josie-12", "relatedUnderMain": false, "instagram": null},

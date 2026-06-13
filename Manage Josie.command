@@ -5,6 +5,20 @@ cd "$(dirname "$0")" || exit 1
 PORT=8091
 SITE="Josie"
 
+# 0) Self-update: quietly pull the latest gallery + editor from GitHub, but ONLY
+#    when it's safe — a clean folder that can fast-forward. If you have unpublished
+#    edits (or anything that would clash), it skips and uses your current copy, so
+#    it can NEVER overwrite your work. Press Publish to sync your own edits up.
+if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if [ -z "$(git status --porcelain)" ]; then
+    echo "Checking for updates…"
+    if git pull --ff-only --quiet origin main 2>/dev/null; then echo "  Up to date."
+    else echo "  (kept your current version)"; fi
+  else
+    echo "  You have unsaved edits — skipping auto-update (press Publish to sync)."
+  fi
+fi
+
 # 1) Free the port: stop a previous copy of this server still holding it, so a
 #    re-launch never fails with "address already in use".
 STALE=$(lsof -ti tcp:$PORT 2>/dev/null)

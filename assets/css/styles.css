@@ -233,20 +233,33 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 .detail__nav a:hover{ color:var(--ink); }
 .detail__nav span{ visibility:hidden; }
 
-/* ---------- detail: split layout (image left, words right) — Josie ---------- */
-.detail--split .detail__cols{ display:flex; gap:48px; align-items:flex-start; }
-.detail--split .detail__media-col{ flex:1 1 auto; min-width:0; }
-.detail--split .detail__info-col{ flex:0 0 286px; padding-top:6px; }
+/* ---------- detail: split layout — Josie ----------
+   Desktop: a 2-col grid — art top-left, its title/date/IG/comment top-right, and the
+   extras (related / speed-paint / youtube) below the art in the left column.
+   Mobile: one column, so the source order (art → info → extras) reads top-to-bottom —
+   the art's title/date/IG land directly under the art, not stranded at the bottom. */
+.detail--split .detail__cols{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 286px;
+  column-gap:48px; row-gap:0;
+  align-items:start;
+}
+.detail--split .detail__art{ grid-column:1; grid-row:1; }
+.detail--split .detail__info{ grid-column:2; grid-row:1; padding-top:6px; }
+.detail--split .detail__extra{ grid-column:1; grid-row:2; }
 .detail--split .detail__media{ text-align:left; }
 .detail--split .detail__title,
 .detail--split .detail__date,
 .detail--split .detail__text{ text-align:left; }
 .detail--split .detail__date{ margin-top:11px; }
+.detail--split .detail__ig{ margin-top:14px; }
 .detail--split .detail__text{ max-width:none; margin:22px 0 0; }
-.detail--split .player{ margin:24px auto 0 0; }
 @media (max-width:860px){
-  .detail--split .detail__cols{ flex-direction:column; gap:24px; }
-  .detail--split .detail__info-col{ flex-basis:auto; padding-top:0; }
+  .detail--split .detail__cols{ grid-template-columns:minmax(0,1fr); }  /* minmax(0,…) so a wide child can't blow the column past the viewport */
+  .detail--split .detail__art,
+  .detail--split .detail__info,
+  .detail--split .detail__extra{ grid-column:1; grid-row:auto; }
+  .detail--split .detail__info{ padding-top:18px; }
 }
 
 /* ---------- detail: YouTube embed + related artwork ---------- */
@@ -265,10 +278,10 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 
 /* ---------- video player (Josie speed-paints) ---------- */
 .player{
-  position:relative; width:fit-content; max-width:100%;
-  margin:30px auto 0; background:#0d0d0e; max-height:82vh; line-height:0;
+  position:relative; width:100%; margin:0;
+  background:#0d0d0e; line-height:0;
 }
-.player__video{ width:auto; max-width:100%; max-height:82vh; height:auto; display:block; }
+.player__video{ width:100%; height:auto; display:block; }
 .player__btn{
   position:absolute; display:inline-flex; align-items:center; justify-content:center;
   color:#fff; transition:opacity .3s var(--ease), transform .3s var(--ease);
@@ -298,25 +311,14 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
   text-transform:uppercase; line-height:1.4; text-align:center; padding:20px;
 }
 
-/* ---------- speed-paint block: video + its title to the right (Josie) ----------
-   The player sits left and grows; its title sits in a fixed column to the right,
-   echoing the piece's image/words split. Stacks under the video on narrow screens. */
-.detail__paint{ margin-top:24px; }
-.detail--split .detail__paint .player{ margin:0; }            /* overrides the lone-player margin above */
-.detail--split .detail__paint--row{ display:flex; gap:30px; align-items:flex-start; }
-.detail--split .detail__paint--row .player{ flex:1 1 auto; min-width:0; }
-.detail__paintinfo{ flex:0 0 200px; padding-top:4px; }
-.detail__paintlabel{
-  font-family:var(--font-display); font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
-  color:var(--ink-soft); display:block; margin-bottom:10px;
-}
+/* ---------- speed-paint block: video sized to the art width, title directly under ----------
+   .detail__paint gets an explicit pixel width from artwork.js (= the main art's
+   displayed width), so the video lines up with the art and the title sits under it. */
+.detail__paint{ margin-top:24px; max-width:100%; }
+.detail__paintinfo{ margin-top:14px; }
 .detail__painttitle{
   font-family:var(--font-display); font-weight:300; letter-spacing:2px; text-transform:uppercase;
-  font-size:17px; line-height:1.35; color:var(--ink); margin:0; overflow-wrap:break-word;
-}
-@media (max-width:860px){
-  .detail--split .detail__paint--row{ flex-direction:column; gap:14px; }
-  .detail__paintinfo{ flex-basis:auto; padding-top:0; }
+  font-size:17px; line-height:1.35; color:var(--ink); margin:0; overflow-wrap:break-word; text-align:left;
 }
 
 /* ---------- about page ---------- */

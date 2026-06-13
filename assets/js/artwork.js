@@ -48,10 +48,16 @@
     '</div>';
 
   if (split) {
+    // Three blocks so the page reflows correctly: on MOBILE (single column) the
+    // order is art → its title/date/IG/comment → extras (related/video/video-title);
+    // on DESKTOP a 2-col grid puts the info to the right of the art and the extras
+    // below the art. (Before, the info sat in a trailing column that stacked at the
+    // very bottom on mobile — under the art AND the video — which was confusing.)
     root.innerHTML = back +
       '<div class="detail__cols">' +
-        '<div class="detail__media-col">' + image + relAbove + vid + relBelow + yt + '</div>' +
-        '<div class="detail__info-col">' + title + date + ig + text + '</div>' +
+        '<div class="detail__art">' + image + '</div>' +
+        '<div class="detail__info">' + title + date + ig + text + '</div>' +
+        '<div class="detail__extra">' + relAbove + vid + relBelow + yt + '</div>' +
       '</div>' + nav;
   } else {
     root.innerHTML = back + image +
@@ -60,17 +66,30 @@
 
   if (hasVideo) wirePlayer();
 
-  /* ---------- speed-paint block: the looping player + its title to the RIGHT ----------
-     Mirrors the piece's image/words split: the video sits left, its own title sits
-     to the right. With no videoTitle it's just the player (unchanged look). */
+  // Match the speed-paint video's width to the main art's displayed width. A
+  // ResizeObserver on the art keeps them in sync across window resizes / rotation.
+  var mainImg = root.querySelector('.detail__img');
+  if (mainImg) {
+    mainImg.addEventListener('load', sizeVideoToArt);
+    if (mainImg.complete) sizeVideoToArt();
+    if (window.ResizeObserver) new ResizeObserver(sizeVideoToArt).observe(mainImg);
+  }
+  window.addEventListener('resize', sizeVideoToArt);
+  function sizeVideoToArt() {
+    var im = root.querySelector('.detail__img'), paint = root.querySelector('.detail__paint');
+    if (!im || !paint) return;
+    paint.style.width = '';                               // reset first so the video can't influence the art's measured width
+    var w = im.getBoundingClientRect().width;
+    if (w) paint.style.width = Math.round(w) + 'px';
+  }
+
+  /* ---------- speed-paint block: the looping player + Josie's own title under it ----------
+     No "Speed-paint" label — Josie titles it herself. Title sits directly under the
+     video (which is sized to the art's width). With no videoTitle it's just the player. */
   function paintBlock(a) {
     var info = a.videoTitle ?
-      '<div class="detail__paintinfo">' +
-        '<span class="detail__paintlabel">Speed&#8209;paint</span>' +
-        '<h2 class="detail__painttitle">' + esc(a.videoTitle) + '</h2>' +
-      '</div>' : '';
-    return '<div class="detail__paint' + (info ? ' detail__paint--row' : '') + '">' +
-      player(a) + info + '</div>';
+      '<div class="detail__paintinfo"><h2 class="detail__painttitle">' + esc(a.videoTitle) + '</h2></div>' : '';
+    return '<div class="detail__paint">' + player(a) + info + '</div>';
   }
 
   /* ---------- minimal looping player ---------- */
@@ -140,7 +159,7 @@
       if (!r) return '';
       img = r.image; title = r.title || ''; href = 'artwork.html?id=' + encodeURIComponent(r.id);
     } else { return ''; }
-    return '<div class="detail__related"><span class="detail__related-label">Related work</span>' +
+    return '<div class="detail__related">' +
       '<a class="relcard" href="' + attr(href) + '"' + extra + '>' +
       '<span class="relcard__img"><img src="' + attr(img) + '" alt="' + attr(title) + '"></span>' +
       '<span class="relcard__title">' + esc(title) + '</span></a></div>';

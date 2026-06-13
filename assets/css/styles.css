@@ -233,20 +233,23 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 .detail__nav a:hover{ color:var(--ink); }
 .detail__nav span{ visibility:hidden; }
 
-/* ---------- detail: split layout — Josie ----------
-   Desktop: a 2-col grid — art top-left, its title/date/IG/comment top-right, and the
-   extras (related / speed-paint / youtube) below the art in the left column.
-   Mobile: one column, so the source order (art → info → extras) reads top-to-bottom —
-   the art's title/date/IG land directly under the art, not stranded at the bottom. */
-.detail--split .detail__cols{
+/* ---------- detail: split layout — Josie (each piece = media | title) ----------
+   A "block" (.ablock) pairs one media (art / speed-paint / related) with its title.
+   DESKTOP: 2-col grid — media on the left, its title on the right (the art block also
+   carries the date/IG/comment), so the speed-paint and related titles line up exactly
+   like the main art's. MOBILE: the title moves ABOVE its media; the art's header keeps
+   the title on the left with date + Instagram pushed to the far right (right edge of art). */
+.detail--split .ablock{
   display:grid;
   grid-template-columns:minmax(0,1fr) 286px;
-  column-gap:48px; row-gap:0;
+  column-gap:48px;
   align-items:start;
+  margin-top:46px;
 }
-.detail--split .detail__art{ grid-column:1; grid-row:1; }
-.detail--split .detail__info{ grid-column:2; grid-row:1; padding-top:6px; }
-.detail--split .detail__extra{ grid-column:1; grid-row:2; }
+.detail--split .detail__cols > .ablock:first-child{ margin-top:0; }
+.detail--split .ablock__media{ grid-column:1; min-width:0; }
+.detail--split .ablock__info,
+.detail--split .ablock__title{ grid-column:2; padding-top:6px; }
 .detail--split .detail__media{ text-align:left; }
 .detail--split .detail__title,
 .detail--split .detail__date,
@@ -255,26 +258,30 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 .detail--split .detail__ig{ margin-top:14px; }
 .detail--split .detail__text{ max-width:none; margin:22px 0 0; }
 @media (max-width:860px){
-  .detail--split .detail__cols{ grid-template-columns:minmax(0,1fr); }  /* minmax(0,…) so a wide child can't blow the column past the viewport */
-  .detail--split .detail__art,
-  .detail--split .detail__info,
-  .detail--split .detail__extra{ grid-column:1; grid-row:auto; }
-  .detail--split .detail__info{ padding-top:18px; }
+  .detail--split .ablock{ grid-template-columns:minmax(0,1fr); column-gap:0; margin-top:32px; }
+  .detail--split .ablock__info,
+  .detail--split .ablock__title{ grid-column:1; grid-row:1; padding-top:0; }
+  .detail--split .ablock__media{ grid-column:1; grid-row:2; }
+  /* art header on mobile: title left, date + Instagram pushed to the far right, one line */
+  .detail--split .ablock--art .ablock__head{ display:flex; align-items:center; gap:10px; }
+  .detail--split .ablock--art .ablock__head .detail__title{ flex:1 1 auto; min-width:0; }
+  .detail--split .ablock--art .ablock__head .detail__date{ margin-top:0; flex:0 0 auto; }
+  .detail--split .ablock--art .ablock__head .detail__ig{ margin-top:0; flex:0 0 auto; }
 }
 
-/* ---------- detail: YouTube embed + related artwork ---------- */
+/* ---------- YouTube embed ---------- */
 .detail__yt{ position:relative; width:100%; max-width:1040px; margin:26px auto 0; aspect-ratio:16/9; background:#0d0d0e; overflow:hidden; }
-.detail--split .detail__yt{ margin:24px 0 0; }
+.detail--split .detail__yt{ margin:46px 0 0; }
 .detail__yt iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
-.detail__related{ margin-top:30px; }
-.detail--split .detail__related{ margin-top:34px; }
-.detail__related-label{ font-family:var(--font-display); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft); display:block; margin-bottom:13px; }
-.relcard{ display:inline-flex; align-items:center; gap:14px; }
-.relcard__img{ width:72px; height:88px; overflow:hidden; background:var(--line); flex:0 0 auto; box-shadow:0 4px 14px rgba(60,50,40,.12); transition:transform .3s var(--ease); }
-.relcard__img img{ width:100%; height:100%; object-fit:cover; display:block; }
-.relcard__title{ font-family:var(--font-display); font-size:14px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft); transition:color .25s var(--ease); }
-.relcard:hover .relcard__img{ transform:scale(1.04); }
-.relcard:hover .relcard__title{ color:var(--ink); }
+
+/* ---------- related artwork (shown like the art: image with its own title) ---------- */
+.relcard{ display:block; max-width:100%; }
+.relcard__img{
+  display:block; width:auto; max-width:100%; max-height:56vh; height:auto;
+  background:var(--line); box-shadow:0 12px 34px rgba(60,50,40,.14); transition:transform .35s var(--ease);
+}
+.relcard:hover .relcard__img{ transform:scale(1.015); }
+.relcard__title{ font-family:var(--font-display); font-size:15px; letter-spacing:1.6px; text-transform:uppercase; color:var(--ink-soft); line-height:1.4; }
 
 /* ---------- video player (Josie speed-paints) ---------- */
 .player{
@@ -311,11 +318,7 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
   text-transform:uppercase; line-height:1.4; text-align:center; padding:20px;
 }
 
-/* ---------- speed-paint block: video sized to the art width, title directly under ----------
-   .detail__paint gets an explicit pixel width from artwork.js (= the main art's
-   displayed width), so the video lines up with the art and the title sits under it. */
-.detail__paint{ margin-top:24px; max-width:100%; }
-.detail__paintinfo{ margin-top:14px; }
+/* ---------- speed-paint title (sits in the block's title cell, like the art's) ---------- */
 .detail__painttitle{
   font-family:var(--font-display); font-weight:300; letter-spacing:2px; text-transform:uppercase;
   font-size:17px; line-height:1.35; color:var(--ink); margin:0; overflow-wrap:break-word; text-align:left;

@@ -48,16 +48,18 @@
     '</div>';
 
   if (split) {
-    // Three blocks so the page reflows correctly: on MOBILE (single column) the
-    // order is art → its title/date/IG/comment → extras (related/video/video-title);
-    // on DESKTOP a 2-col grid puts the info to the right of the art and the extras
-    // below the art. (Before, the info sat in a trailing column that stacked at the
-    // very bottom on mobile — under the art AND the video — which was confusing.)
+    // Each piece (art / speed-paint / related) is its own block. On DESKTOP a block is
+    // a 2-col grid — media left, its title on the right (the art block also keeps the
+    // date/IG/comment on the right). On MOBILE the title sits ABOVE its media, and the
+    // art's title shares one line with the date + IG (title left, those pushed right).
+    var head = '<div class="ablock__head">' + title + date + ig + '</div>';
     root.innerHTML = back +
       '<div class="detail__cols">' +
-        '<div class="detail__art">' + image + '</div>' +
-        '<div class="detail__info">' + title + date + ig + text + '</div>' +
-        '<div class="detail__extra">' + relAbove + vid + relBelow + yt + '</div>' +
+        '<div class="ablock ablock--art">' +
+          '<div class="ablock__info">' + head + text + '</div>' +
+          '<div class="ablock__media">' + image + '</div>' +
+        '</div>' +
+        relAbove + vid + relBelow + yt +
       '</div>' + nav;
   } else {
     root.innerHTML = back + image +
@@ -76,20 +78,22 @@
   }
   window.addEventListener('resize', sizeVideoToArt);
   function sizeVideoToArt() {
-    var im = root.querySelector('.detail__img'), paint = root.querySelector('.detail__paint');
-    if (!im || !paint) return;
-    paint.style.width = '';                               // reset first so the video can't influence the art's measured width
+    var im = root.querySelector('.detail__img'), vid = root.querySelector('.ablock--paint .player');
+    if (!im || !vid) return;
+    vid.style.width = '';                                 // reset first so the video can't influence the art's measured width
     var w = im.getBoundingClientRect().width;
-    if (w) paint.style.width = Math.round(w) + 'px';
+    if (w) vid.style.width = Math.round(w) + 'px';
   }
 
-  /* ---------- speed-paint block: the looping player + Josie's own title under it ----------
-     No "Speed-paint" label — Josie titles it herself. Title sits directly under the
-     video (which is sized to the art's width). With no videoTitle it's just the player. */
+  /* ---------- speed-paint block: video + Josie's own title ----------
+     Same arrangement as the art: title to the RIGHT of the video on desktop, ABOVE it
+     on mobile. No "Speed-paint" label. The video is sized to the art's width (JS). */
   function paintBlock(a) {
-    var info = a.videoTitle ?
-      '<div class="detail__paintinfo"><h2 class="detail__painttitle">' + esc(a.videoTitle) + '</h2></div>' : '';
-    return '<div class="detail__paint">' + player(a) + info + '</div>';
+    var t = a.videoTitle ? '<h2 class="detail__painttitle">' + esc(a.videoTitle) + '</h2>' : '';
+    return '<div class="ablock ablock--paint">' +
+      '<div class="ablock__title">' + t + '</div>' +
+      '<div class="ablock__media">' + player(a) + '</div>' +
+    '</div>';
   }
 
   /* ---------- minimal looping player ---------- */
@@ -159,10 +163,12 @@
       if (!r) return '';
       img = r.image; title = r.title || ''; href = 'artwork.html?id=' + encodeURIComponent(r.id);
     } else { return ''; }
-    return '<div class="detail__related">' +
-      '<a class="relcard" href="' + attr(href) + '"' + extra + '>' +
-      '<span class="relcard__img"><img src="' + attr(img) + '" alt="' + attr(title) + '"></span>' +
-      '<span class="relcard__title">' + esc(title) + '</span></a></div>';
+    var t = title ? '<span class="relcard__title">' + esc(title) + '</span>' : '';
+    return '<div class="ablock ablock--related">' +
+      '<div class="ablock__title">' + t + '</div>' +
+      '<div class="ablock__media"><a class="relcard" href="' + attr(href) + '"' + extra + '>' +
+        '<img class="relcard__img" src="' + attr(img) + '" alt="' + attr(title) + '"></a></div>' +
+    '</div>';
   }
 
   /* ---------- per-piece Instagram icon (under the date) ----------

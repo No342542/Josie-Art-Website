@@ -1,0 +1,314 @@
+/* =========================================================================
+   Ann & Josie portfolio — shared stylesheet
+   Calm, image-first artist portfolio. Inspired by loish.net (not a copy).
+   ========================================================================= */
+
+/* ---------- tokens ---------- */
+:root{
+  --sidebar-w: 252px;
+  --bg: #eae9e6;            /* warm off-white main field */
+  --sidebar-bg: #ffffff;
+  --ink: #44423d;           /* primary text */
+  --ink-soft: #8c887f;      /* secondary / inactive nav */
+  --ink-faint: #bdb9b1;     /* rules, separators */
+  --line: #e4e1db;          /* hairlines, image placeholder */
+  --accent: #b0876a;        /* warm accent — underlines, active */
+  --gap: 20px;
+  --maxcol: 3;
+  --font-display: 'Jost', system-ui, -apple-system, sans-serif;
+  --font-body: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-hand: 'Caveat', 'Segoe Script', cursive;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:18px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+
+/* ---------- layout ---------- */
+.sidebar{
+  position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+  background:var(--sidebar-bg);
+  border-right:1px solid var(--line);
+  display:flex; flex-direction:column;
+  padding:34px 26px 26px;
+  z-index:40;
+}
+.main{
+  margin-left:var(--sidebar-w);
+  min-height:100vh;
+  padding:44px clamp(20px,4vw,56px) 80px;
+}
+
+/* ---------- logo / mark ---------- */
+.logo{
+  position:relative;
+  width:174px; height:174px;
+  margin:4px auto 30px;
+  border-radius:50%;
+  overflow:hidden;
+  background-color:var(--line);
+  background-repeat:no-repeat;
+  background-size:cover;
+  box-shadow:0 6px 22px rgba(60,52,44,.10);
+}
+.logo--ann{ background-image:url('../img/logo/ann-icon.png'); background-position:54% 40%; }
+.logo--josie{ background-image:url('../img/logo/josie-icon.jpg'); background-position:50% 38%; }
+/* subtle veil so a hand-written wordmark stays legible over the photo */
+.logo--ann::after{
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 46%, rgba(247,242,235,.42), rgba(247,242,235,0) 62%);
+}
+.logo__word{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-hand);
+  font-size:62px; font-weight:600; letter-spacing:2px;
+  color:#fbf7f1;
+  text-shadow:0 2px 10px rgba(60,40,28,.45);
+  padding-bottom:6px;
+}
+
+/* ---------- nav ---------- */
+.nav{ display:flex; flex-direction:column; gap:2px; }
+.nav__link{
+  display:flex; align-items:center; gap:9px;
+  font-family:var(--font-display);
+  font-size:13px; font-weight:400; letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:11px 2px;
+  border-bottom:1px solid transparent;
+  transition:color .25s var(--ease);
+}
+.nav__link:hover{ color:var(--ink); }
+.nav__link.is-active{ color:var(--ink); }
+.nav__link .ig{ width:16px; height:16px; flex:0 0 auto; opacity:.85; }
+
+/* ---------- mobile top bar / hamburger ---------- */
+.hamburger{
+  width:34px; height:34px; display:none; flex-direction:column;
+  justify-content:center; gap:5px; padding:6px;
+}
+.hamburger span{ height:1.5px; background:var(--ink); transition:transform .3s var(--ease),opacity .3s; }
+
+/* ---------- page head ---------- */
+.page-head{ text-align:center; margin:6px 0 30px; }
+.page-title{
+  font-family:var(--font-display);
+  font-size:18px; font-weight:300; letter-spacing:5px; text-transform:uppercase;
+  color:var(--ink-soft); margin:0;
+}
+.page-rule{ width:46px; height:1px; background:var(--ink-faint); margin:14px auto 0; border:0; }
+
+/* ---------- filters (category bar) ---------- */
+.filters{
+  display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
+  gap:4px 0; margin:0 auto 34px; max-width:920px;
+}
+.filter{
+  font-family:var(--font-display);
+  font-size:13px; font-weight:400; letter-spacing:1.4px;
+  color:var(--ink-soft);
+  padding:6px 16px 7px;
+  position:relative;
+  transition:color .25s var(--ease);
+}
+.filter:hover{ color:var(--ink); }
+.filter.is-active{ color:var(--ink); }
+.filter.is-active::after{
+  content:""; position:absolute; left:16px; right:16px; bottom:0; height:1px;
+  background:var(--accent);
+}
+.filters__sep{ color:var(--ink-faint); font-size:12px; user-select:none; }
+
+/* ---------- grid (ROW-MAJOR masonry via CSS-grid row spans) ----------
+   Columns fill left-to-right (so a row here == a row in the Manage tool).
+   gallery.js measures each card and sets grid-row: span N from its height,
+   so images keep their natural aspect (never cropped) and shorter cards let
+   the next row tuck up — the masonry look, but ordered across instead of down. */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(var(--maxcol), minmax(0,1fr));
+  grid-auto-rows:6px;          /* tiny row unit; JS spans each card to its height */
+  column-gap:var(--gap);
+  row-gap:0;                   /* vertical gap is baked into the span math (gallery.js) */
+  align-items:start;
+}
+.grid--single{ grid-template-columns:1fr; max-width:760px; margin:0 auto; }
+
+.card{
+  position:relative; display:block; margin:0;
+  overflow:hidden; background:var(--line);
+  outline:1px solid rgba(0,0,0,0); /* keeps subpixel edges clean */
+}
+.card__img{
+  width:100%; height:auto; display:block;
+  transition:transform .65s var(--ease), filter .45s var(--ease);
+}
+.card__overlay{
+  position:absolute; inset:0; opacity:0;
+  transition:opacity .4s var(--ease);
+  background:linear-gradient(180deg, rgba(34,30,26,.10), rgba(20,17,14,.30));
+  pointer-events:none;
+}
+.card__facets{ position:absolute; inset:0; width:100%; height:100%; }
+.card__title{
+  position:absolute; left:0; right:0; top:50%;
+  transform:translateY(-50%) translateY(10px);
+  text-align:center; padding:0 18px;
+  font-family:var(--font-display);
+  font-size:clamp(30px,2.7vw,38px); font-weight:400; letter-spacing:3px; text-transform:uppercase;
+  color:#fbf9f6; text-shadow:0 1px 16px rgba(20,14,8,.45);
+  transition:transform .45s var(--ease), opacity .45s var(--ease);
+  opacity:0;
+}
+.card__arrow{
+  position:absolute; right:16px; bottom:14px; width:26px; height:26px;
+  color:#fbf9f6; opacity:0; transform:translateX(-6px);
+  filter:drop-shadow(0 1px 8px rgba(20,14,8,.5));
+  transition:transform .45s var(--ease), opacity .45s var(--ease);
+}
+/* reveal */
+.card:hover .card__img,
+.card.is-active .card__img{ transform:scale(1.06); }
+.card:hover .card__overlay,
+.card.is-active .card__overlay{ opacity:1; }
+.card:hover .card__title,
+.card.is-active .card__title{ opacity:1; transform:translateY(-50%) translateY(0); }
+.card:hover .card__arrow,
+.card.is-active .card__arrow{ opacity:1; transform:translateX(0); }
+
+/* ---------- detail page ---------- */
+.detail{ max-width:1040px; margin:0 auto; }
+.detail__back{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:var(--font-display); font-size:12px; letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--ink-soft); margin-bottom:26px; transition:color .25s var(--ease);
+}
+.detail__back:hover{ color:var(--ink); }
+.detail__media{ text-align:center; }
+.detail__img{
+  display:inline-block; max-width:100%; max-height:78vh; width:auto; margin:0 auto;
+  box-shadow:0 18px 50px rgba(60,50,40,.16);
+}
+.detail__meta{ text-align:center; margin:26px 0 4px; }
+.detail__title{
+  font-family:var(--font-display); font-weight:300; letter-spacing:3px; text-transform:uppercase;
+  font-size:21px; color:var(--ink); margin:0;
+}
+.detail__date{
+  font-family:var(--font-display); font-size:12px; letter-spacing:2px;
+  color:var(--ink-soft); margin-top:9px;
+}
+.detail__text{
+  max-width:620px; margin:18px auto 0; text-align:center;
+  color:var(--ink-soft); font-size:19px; line-height:1.75;
+}
+.detail__nav{
+  display:flex; justify-content:space-between; gap:16px;
+  max-width:1040px; margin:48px auto 0;
+}
+.detail__nav a{
+  font-family:var(--font-display); font-size:12px; letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--ink-soft); transition:color .25s var(--ease);
+}
+.detail__nav a:hover{ color:var(--ink); }
+.detail__nav span{ visibility:hidden; }
+
+/* ---------- detail: split layout (image left, words right) — Josie ---------- */
+.detail--split .detail__cols{ display:flex; gap:48px; align-items:flex-start; }
+.detail--split .detail__media-col{ flex:1 1 auto; min-width:0; }
+.detail--split .detail__info-col{ flex:0 0 286px; padding-top:6px; }
+.detail--split .detail__media{ text-align:left; }
+.detail--split .detail__title,
+.detail--split .detail__date,
+.detail--split .detail__text{ text-align:left; }
+.detail--split .detail__date{ margin-top:11px; }
+.detail--split .detail__text{ max-width:none; margin:22px 0 0; }
+.detail--split .player{ margin:24px auto 0 0; }
+@media (max-width:860px){
+  .detail--split .detail__cols{ flex-direction:column; gap:24px; }
+  .detail--split .detail__info-col{ flex-basis:auto; padding-top:0; }
+}
+
+/* ---------- detail: YouTube embed + related artwork ---------- */
+.detail__yt{ position:relative; width:100%; max-width:1040px; margin:26px auto 0; aspect-ratio:16/9; background:#0d0d0e; overflow:hidden; }
+.detail--split .detail__yt{ margin:24px 0 0; }
+.detail__yt iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.detail__related{ margin-top:30px; }
+.detail--split .detail__related{ margin-top:34px; }
+.detail__related-label{ font-family:var(--font-display); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft); display:block; margin-bottom:13px; }
+.relcard{ display:inline-flex; align-items:center; gap:14px; }
+.relcard__img{ width:72px; height:88px; overflow:hidden; background:var(--line); flex:0 0 auto; box-shadow:0 4px 14px rgba(60,50,40,.12); transition:transform .3s var(--ease); }
+.relcard__img img{ width:100%; height:100%; object-fit:cover; display:block; }
+.relcard__title{ font-family:var(--font-display); font-size:14px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft); transition:color .25s var(--ease); }
+.relcard:hover .relcard__img{ transform:scale(1.04); }
+.relcard:hover .relcard__title{ color:var(--ink); }
+
+/* ---------- video player (Josie speed-paints) ---------- */
+.player{
+  position:relative; width:fit-content; max-width:100%;
+  margin:30px auto 0; background:#0d0d0e; max-height:82vh; line-height:0;
+}
+.player__video{ width:auto; max-width:100%; max-height:82vh; height:auto; display:block; }
+.player__btn{
+  position:absolute; display:inline-flex; align-items:center; justify-content:center;
+  color:#fff; transition:opacity .3s var(--ease), transform .3s var(--ease);
+}
+.player__play{
+  inset:0; margin:auto; width:84px; height:84px; border-radius:50%;
+  background:rgba(20,18,16,.42); backdrop-filter:blur(2px);
+}
+.player__play svg{ width:30px; height:30px; margin-left:4px; }
+.player__play:hover{ background:rgba(20,18,16,.6); transform:scale(1.04); }
+.player__stop{
+  top:16px; right:16px; width:42px; height:42px; border-radius:50%;
+  background:rgba(20,18,16,.4); opacity:0;
+}
+.player__stop svg{ width:16px; height:16px; }
+.player.is-playing .player__stop{ opacity:1; }
+.player.is-playing:hover .player__stop{ opacity:1; }
+.player .player__play[hidden]{ display:none; }
+.player__note{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  color:#cfc9c0; font-family:var(--font-display); font-size:12px; letter-spacing:2px;
+  text-transform:uppercase; line-height:1.4; text-align:center; padding:20px;
+}
+
+/* ---------- about page ---------- */
+.about{ max-width:680px; margin:0 auto; text-align:center; }
+.about__body{ color:var(--ink-soft); font-size:20px; line-height:1.8; }
+.about__body p{ margin:0 0 1.1em; }
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){ :root{ --maxcol:3; } }
+@media (max-width:1024px){ :root{ --maxcol:2; } }
+@media (max-width:900px){
+  .sidebar{
+    position:fixed; flex-direction:row; align-items:center; justify-content:space-between;
+    inset:0 0 auto 0; width:100%; height:64px; padding:0 18px;
+    border-right:0; border-bottom:1px solid var(--line);
+  }
+  .logo{ width:42px; height:42px; margin:0; box-shadow:none; }
+  .logo__word{ font-size:17px; padding-bottom:1px; letter-spacing:1px; }
+  .hamburger{ display:inline-flex; }
+  .nav{
+    position:fixed; left:0; right:0; top:64px; gap:0;
+    background:var(--sidebar-bg); border-bottom:1px solid var(--line);
+    padding:8px 22px; transform:translateY(-12px); opacity:0; pointer-events:none;
+    transition:transform .3s var(--ease), opacity .3s var(--ease);
+  }
+  .sidebar.is-open .nav{ transform:none; opacity:1; pointer-events:auto; }
+  .main{ margin-left:0; padding-top:90px; }
+}
+@media (max-width:700px){ :root{ --maxcol:1; } .grid{ max-width:520px; margin:0 auto; } }

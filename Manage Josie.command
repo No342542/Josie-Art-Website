@@ -1,0 +1,53 @@
+#!/bin/bash
+# Double-click to run Josie's gallery locally — the WEBSITE and the EDITOR.
+# Keep this window open while you work. Close it (or press Ctrl+C) to stop.
+cd "$(dirname "$0")" || exit 1
+PORT=8091
+SITE="Josie"
+
+# 1) Free the port: stop a previous copy of this server still holding it, so a
+#    re-launch never fails with "address already in use".
+STALE=$(lsof -ti tcp:$PORT 2>/dev/null)
+if [ -n "$STALE" ]; then
+  CMD=$(ps -p $STALE -o comm= 2>/dev/null)
+  case "$CMD" in
+    *[Pp]ython*) echo "Restarting $SITE (stopping the previous server on port $PORT)…"
+                 kill $STALE 2>/dev/null; sleep 1 ;;
+    *) echo "Port $PORT is in use by '$CMD'. I'll try to start anyway…" ;;
+  esac
+fi
+
+# 2) Start the server in the background.
+echo "Starting $SITE's gallery…"
+python3 manage/server.py --port "$PORT" &
+SRV=$!
+
+# 3) Wait until it actually answers before opening the browser (no more blank "failed to load").
+READY=""
+for i in $(seq 1 60); do
+  if curl -s -o /dev/null "http://127.0.0.1:$PORT/"; then READY=1; break; fi
+  if ! kill -0 $SRV 2>/dev/null; then break; fi   # server exited early (see its message above)
+  sleep 0.25
+done
+
+if [ -z "$READY" ]; then
+  echo ""
+  echo "  Couldn't start $SITE's gallery on port $PORT."
+  echo "  Tip: close any other 'Manage $SITE' window, then double-click this again."
+  echo ""
+  read -n 1 -s -r -p "Press any key to close."
+  exit 1
+fi
+
+# 4) Open the website and the editor.
+open "http://127.0.0.1:$PORT/"          # the website (what visitors see)
+open "http://127.0.0.1:$PORT/admin/"    # the editor (Manage tool)
+
+echo ""
+echo "  $SITE's gallery is running:"
+echo "    Website : http://127.0.0.1:$PORT/"
+echo "    Editor  : http://127.0.0.1:$PORT/admin/"
+echo ""
+echo "  Leave this window open while you work. Reload the browser to see edits."
+echo "  Close this window (or press Ctrl+C) to stop."
+wait $SRV

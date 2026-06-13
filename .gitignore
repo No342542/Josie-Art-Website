@@ -1,0 +1,12 @@
+# Don't publish trash, backups, OS cruft, or the tool's local cache
+assets/_trash/
+trash test photos/
+data.js.bak_*
+*.bak
+*.tmp
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+.DS_Store?
+._*

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" id="brandMark"></span>
+      <span class="brand__name">Manage <strong id="siteName">…</strong></span>
+    </div>
+    <div class="topbar__actions">
+      <span class="save" id="status">Loading…</span>
+      <a class="btn btn--ghost" href="/" target="_blank" rel="noopener">Preview&nbsp;↗</a>
+      <button class="btn btn--ghost" id="settingsBtn" title="About &amp; Instagram">⚙ About</button>
+      <button class="btn" id="trashBtn">🗑 Trash <span class="badge" id="trashCount" hidden>0</span></button>
+      <button class="btn" id="addBtn">＋ Add photos</button>
+      <button class="btn btn--primary" id="publishBtn">🌐 Publish</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" aria-label="Galleries"></nav>
+
+  <main class="stage" id="stage">
+    <div class="stage__main">
+      <p class="lead" id="lead">Drag to reorder. Drop photos from your computer anywhere here to add. Drag a photo to the trash can to remove it.</p>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" hidden>No photos yet — drop images here or press <b>＋ Add photos</b>.</div>
+    </div>
+    <aside class="pool" id="pool" aria-hidden="true">
+      <div class="pool__head">
+        <span class="pool__title" id="poolTitle">All photos</span>
+        <span class="pool__hint" id="poolHint"></span>
+      </div>
+      <!-- drop a photo from the gallery here to take it OUT of this collection (it stays in All) -->
+      <div class="pool__remove" id="poolRemove">
+        <span class="pool__remove-label" id="removeLabel">Remove from collection</span>
+        <span class="pool__remove-sub">drag a photo here to take it out of this gallery</span>
+      </div>
+      <div class="pool__grid" id="poolGrid"></div>
+      <div class="pool__empty" id="poolEmpty" hidden>Every photo is already in this gallery.</div>
+    </aside>
+    <div class="dropveil" id="dropveil"><div class="dropveil__card">＋ Drop photos to add</div></div>
+  </main>
+
+  <button class="trashcan" id="trashcan" title="Drag a photo here to trash it">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="3 6 5 6 21 6"></polyline>
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+      <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+    </svg>
+    <span class="trashcan__hint">Drop to trash</span>
+  </button>
+
+  <!-- edit drawer -->
+  <aside class="drawer" id="editDrawer" aria-hidden="true">
+    <div class="drawer__head">
+      <span class="drawer__title">Edit photo</span>
+      <button class="iconbtn" id="editClose" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer__body">
+      <div class="preview"><img id="eImg" alt=""></div>
+      <label class="field"><span class="field__label">Title</span>
+        <input class="input" id="eTitle" type="text"></label>
+      <label class="field"><span class="field__label">Date</span>
+        <input class="input" id="eDate" type="text" placeholder="2025"></label>
+      <!-- Category is now managed visually on the gallery tabs (drag in/out), so the
+           old single-category dropdown is hidden. Kept in the DOM for back-compat. -->
+      <select id="eCat" hidden></select>
+      <label class="field"><span class="field__label">Comment</span>
+        <textarea class="input" id="eText" rows="3"></textarea></label>
+      <div class="field" id="eVideoField">
+        <span class="field__label">Speed‑paint video (.mp4)</span>
+        <div class="videoline">
+          <span class="videoname" id="eVideoName">none</span>
+          <button class="link" id="eAddVideo" type="button">Add…</button>
+          <button class="link link--muted" id="eClearVideo" type="button" hidden>Remove</button>
+        </div>
+      </div>
+      <label class="field" id="eYoutubeField"><span class="field__label">YouTube video link (optional)</span>
+        <input class="input" id="eYoutube" type="url" placeholder="https://youtu.be/…"></label>
+      <div class="field" id="eRelatedField">
+        <span class="field__label">Related artwork (optional)</span>
+        <select class="input" id="eRelated"></select>
+        <div class="reledit" id="eRelatedUpload" hidden>
+          <img class="reledit__thumb" id="eRelatedThumb" alt="">
+          <div class="reledit__col">
+            <input class="input" id="eRelatedTitle" type="text" placeholder="Name this related image">
+            <button class="link link--muted" id="eRelatedRemove" type="button">Remove uploaded image</button>
+          </div>
+        </div>
+      </div>
+      <div class="drawer__foot">
+        <a class="btn btn--ghost" id="eDownload" download>⤓ Download</a>
+        <button class="btn btn--danger" id="eTrash" type="button">🗑 Move to Trash</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- trash drawer -->
+  <aside class="drawer" id="trashDrawer" aria-hidden="true">
+    <div class="drawer__head">
+      <span class="drawer__title">Trash <small>· kept 30 days</small></span>
+      <button class="iconbtn" id="trashClose" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer__body">
+      <p class="lead">Drag a photo from the grid onto this panel to remove it. Removed photos are kept 30 days — restore anytime.</p>
+      <div id="trashList" class="trashlist"></div>
+      <div class="trashempty" id="trashEmpty" hidden>Nothing in the trash yet.</div>
+    </div>
+  </aside>
+
+  <!-- settings drawer -->
+  <aside class="drawer" id="settingsDrawer" aria-hidden="true">
+    <div class="drawer__head">
+      <span class="drawer__title">About &amp; links</span>
+      <button class="iconbtn" id="settingsClose" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer__body">
+      <label class="field"><span class="field__label">About text</span>
+        <textarea class="input" id="sAbout" rows="6"></textarea></label>
+      <label class="field"><span class="field__label">Instagram link</span>
+        <input class="input" id="sInsta" type="url" placeholder="https://instagram.com/…"></label>
+      <p class="lead">These show on your site's About page and the Instagram menu link.</p>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim" hidden></div>
+
+  <input type="file" id="filePick" accept="image/*" multiple hidden>
+  <input type="file" id="videoPick" accept="video/mp4,video/webm" hidden>
+  <input type="file" id="relatedPick" accept="image/*" hidden>
+
+  <template id="cardTpl">
+    <figure class="card" draggable="true" tabindex="0">
+      <div class="card__media"><img alt="" loading="lazy"></div>
+      <figcaption class="card__cap">
+        <span class="card__title"></span>
+        <span class="card__cat"></span>
+      </figcaption>
+      <div class="card__veil"><span class="card__edit">Edit</span></div>
+      <span class="card__grip" title="Drag to reorder">⠿</span>
+    </figure>
+  </template>
+
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -45,7 +45,7 @@ window.SITE = {
 };
 
 window.ARTWORKS = [
-  {"id": "img_3346-1", "title": "IMG_3346", "date": "2026", "category": "", "image": "assets/img/artwork/img_3346-1.jpg", "text": "", "video": "assets/video/img_3346-1.mp4", "videoTitle": null, "youtube": null, "related": {"mode": "image", "image": "assets/img/related/manage-josie-icon.png", "title": "Process"}, "relatedUnderMain": true, "instagram": null},
+  {"id": "img_3346-1", "title": "IMG_3346", "date": "2026", "category": "", "image": "assets/img/artwork/img_3346-1.jpg", "text": "", "video": "assets/video/img_3346-1.mp4", "videoTitle": null, "youtube": null, "related": {"mode": "image", "image": "assets/img/related/manage-josie-icon.png", "title": "Process"}, "relatedUnderMain": true, "instagram": "https://www.instagram.com/p/DY3k6EsG-7Y/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="},
   {"id": "josie-03", "title": "Wildflower", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-03.svg", "text": "Add a short note about “Wildflower” here.", "video": null, "videoTitle": null, "youtube": null, "related": null, "relatedUnderMain": false, "instagram": null},
   {"id": "josie-04", "title": "Stargazer", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-04.svg", "text": "Add a short note about “Stargazer” here.", "video": "assets/video/josie-04.mp4", "videoTitle": null, "youtube": null, "related": null, "relatedUnderMain": false, "instagram": null},
   {"id": "josie-06", "title": "Quick Study", "date": "2025", "category": "Sketch", "image": "assets/img/artwork/josie-06.svg", "text": "Add a short note about “Quick Study” here.", "video": null, "videoTitle": null, "youtube": null, "related": "josie-12", "relatedUnderMain": false, "instagram": null},

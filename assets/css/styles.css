@@ -259,11 +259,17 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 .detail--split .detail__text{ max-width:none; margin:22px 0 0; }
 @media (max-width:860px){
   .detail--split .ablock{ grid-template-columns:minmax(0,1fr); column-gap:0; margin-top:32px; }
-  .detail--split .ablock__info,
   .detail--split .ablock__title{ grid-column:1; grid-row:1; padding-top:0; }
   .detail--split .ablock__media{ grid-column:1; grid-row:2; }
-  /* art header on mobile: title left, date + Instagram pushed to the far right, one line */
-  .detail--split .ablock--art .ablock__head{ display:flex; align-items:center; gap:10px; }
+  /* art block: header ABOVE the art, comment directly BELOW it. display:contents unwraps
+     the info box so the header and comment become independent grid rows on mobile. */
+  .detail--split .ablock--art .ablock__info{ display:contents; }
+  .detail--split .ablock--art .detail__text{ grid-column:1; grid-row:3; }
+  /* header on one line: title left, date + Instagram pushed to the far right */
+  .detail--split .ablock--art .ablock__head{
+    grid-column:1; grid-row:1;
+    display:flex; align-items:center; gap:10px;
+  }
   .detail--split .ablock--art .ablock__head .detail__title{ flex:1 1 auto; min-width:0; }
   .detail--split .ablock--art .ablock__head .detail__date{ margin-top:0; flex:0 0 auto; }
   .detail--split .ablock--art .ablock__head .detail__ig{ margin-top:0; flex:0 0 auto; }

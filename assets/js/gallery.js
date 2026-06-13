@@ -17,6 +17,16 @@
   var collections = (S.collections && typeof S.collections === 'object') ? S.collections : null;
   var ALL = cats[0] || 'All';
 
+  /* Filter-bar display order. A site may set SITE.menuOrder to control it (Josie
+     wants Featured first and All last); otherwise we use the natural categories
+     order. Any real category missing from menuOrder is appended, and any stale
+     name is dropped, so the bar always covers exactly the existing categories.
+     ALL keeps meaning "everything" no matter where it sits in the bar. */
+  var order = (Array.isArray(S.menuOrder) && S.menuOrder.length) ? S.menuOrder.slice() : cats.slice();
+  cats.forEach(function (c) { if (order.indexOf(c) === -1) order.push(c); });
+  order = order.filter(function (c) { return cats.indexOf(c) !== -1; });
+  var DEFAULT = order[0] || ALL;   // tab shown on load (the leftmost one)
+
   var byId = {};
   ART.forEach(function (a) { byId[a.id] = a; });
 
@@ -39,7 +49,7 @@
   /* ---- filter bar ---- */
   var bar = document.getElementById('filters');
   var buttons = [];
-  cats.forEach(function (cat, i) {
+  order.forEach(function (cat, i) {
     if (i > 0) {
       var sep = document.createElement('span');
       sep.className = 'filters__sep';
@@ -47,7 +57,7 @@
       bar.appendChild(sep);
     }
     var b = document.createElement('button');
-    b.className = 'filter' + (i === 0 ? ' is-active' : '');
+    b.className = 'filter' + (cat === DEFAULT ? ' is-active' : '');
     b.type = 'button';
     b.textContent = cat;
     b.addEventListener('click', function () { apply(cat); });
@@ -122,7 +132,7 @@
     render(cat);
   }
 
-  render(ALL);   // initial
+  render(DEFAULT);   // initial
 
   /* ---- touch: first tap reveals overlay, second tap opens (delegated, survives re-render) ---- */
   var coarse = window.matchMedia && window.matchMedia('(hover: none)').matches;

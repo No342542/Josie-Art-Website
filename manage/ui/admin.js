@@ -296,7 +296,7 @@
   function trashCard(card){
     var a = card._art;
     setStatus('Removing…','saving');
-    api('/api/trash', { art: { id:a.id, title:a.title, date:a.date, category:a.category, image:a.image, text:a.text, video:a.video||null } })
+    api('/api/trash', { art: { id:a.id, title:a.title, date:a.date, category:a.category, image:a.image, text:a.text, video:a.video||null, videoTitle:a.videoTitle||null } })
       .then(function(res){
         if (editing===card) closeDrawers();
         removeArtEverywhere(a.id);
@@ -319,7 +319,7 @@
     if (currentTab !== 'All') switchTab('All');     // new uploads belong to the master list
     imgs.forEach(function(f){
       var art = { id:'', title:f.name.replace(/\.[^.]+$/,''), date:String(new Date().getFullYear()),
-        category:'', image:'', text:'', video:null, youtube:null, related:null };
+        category:'', image:'', text:'', video:null, videoTitle:null, youtube:null, related:null };
       ALL_ARTS.push(art);
       var card = buildCard(art); card.classList.add('card--uploading'); grid.appendChild(card); updateEmpty();
       setStatus('Uploading…','saving');
@@ -364,6 +364,8 @@
     $('eVideoName').textContent = a.video ? basename(a.video) : 'none';
     $('eVideoName').classList.toggle('has', !!a.video);
     $('eClearVideo').hidden = !a.video;
+    var tf = $('eVideoTitleField');                          // title only matters when a video exists
+    if (tf){ tf.hidden = !a.video; $('eVideoTitle').value = a.videoTitle || ''; }
   }
   function renderRelated(a){
     var sel = $('eRelated'); if (!sel) return;
@@ -399,6 +401,7 @@
   if ($('eCat')) $('eCat').addEventListener('change', function(){ if(!editing)return; editing._art.category=this.value; scheduleSave(); });
   $('eAddVideo').addEventListener('click', function(){ if(!editing)return; videoPick.value=''; videoPick.click(); });
   $('eClearVideo').addEventListener('click', function(){ if(!editing)return; editing._art.video=null; renderEditVideo(editing._art); scheduleSave(); });
+  if ($('eVideoTitle')) $('eVideoTitle').addEventListener('input', function(){ if(!editing)return; editing._art.videoTitle=this.value; scheduleSave(); });
   if ($('eYoutube')) $('eYoutube').addEventListener('input', function(){ if(!editing)return; editing._art.youtube=this.value.trim()||null; scheduleSave(); });
   if ($('eRelated')) $('eRelated').addEventListener('change', function(){
     if(!editing) return; var a = editing._art; var v = this.value;
@@ -519,7 +522,8 @@
   function siteForSave(){ SITE.collections = COLLECTIONS; return SITE; }
   function cleanArts(){
     return ALL_ARTS.map(function(a){ return { id:a.id, title:a.title||'', date:a.date||'', category:a.category||'',
-        image:a.image, text:a.text||'', video:a.video||null, youtube:a.youtube||null, related:a.related||null }; })
+        image:a.image, text:a.text||'', video:a.video||null, videoTitle:(a.videoTitle && String(a.videoTitle).trim())||null,
+        youtube:a.youtube||null, related:a.related||null }; })
       .filter(function(a){ return a.image; });
   }
   function saveNow(){

@@ -13,6 +13,12 @@ window.SITE = {
     "Full",
     "Sketch"
   ],
+  "menuOrder": [
+    "Featured",
+    "Full",
+    "Sketch",
+    "All"
+  ],
   "hasVideo": true,
   "detailLayout": "split",
   "collections": {
@@ -43,20 +49,20 @@ window.SITE = {
 };
 
 window.ARTWORKS = [
-  {"id": "skywards", "title": "Skywards", "date": "2026", "category": "Featured", "image": "assets/img/artwork/skywards.jpg", "text": "", "video": null, "youtube": null, "related": null},
-  {"id": "untitled_artwork-18", "title": "Untitled_Artwork 18", "date": "2026", "category": "Featured", "image": "assets/img/artwork/untitled_artwork-18.jpg", "text": "", "video": null, "youtube": null, "related": null},
-  {"id": "untitled_artwork-17", "title": "Untitled_Artwork 17", "date": "2026", "category": "Featured", "image": "assets/img/artwork/untitled_artwork-17.jpg", "text": "", "video": null, "youtube": null, "related": null},
-  {"id": "image-1", "title": "image", "date": "2026", "category": "", "image": "assets/img/artwork/image-1.jpeg", "text": "", "video": null, "youtube": null, "related": null},
-  {"id": "josie-03", "title": "Wildflower", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-03.svg", "text": "Add a short note about “Wildflower” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-04", "title": "Stargazer", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-04.svg", "text": "Add a short note about “Stargazer” here.", "video": "assets/video/josie-04.mp4", "youtube": null, "related": null},
-  {"id": "josie-06", "title": "Quick Study", "date": "2025", "category": "Sketch", "image": "assets/img/artwork/josie-06.svg", "text": "Add a short note about “Quick Study” here.", "video": null, "youtube": null, "related": "josie-12"},
-  {"id": "josie-07", "title": "Gesture", "date": "2024", "category": "Sketch", "image": "assets/img/artwork/josie-07.svg", "text": "Add a short note about “Gesture” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-08", "title": "Daydream", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-08.svg", "text": "Add a short note about “Daydream” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-09", "title": "Linework", "date": "2024", "category": "Sketch", "image": "assets/img/artwork/josie-09.svg", "text": "Add a short note about “Linework” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-10", "title": "Bloom", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-10.svg", "text": "Add a short note about “Bloom” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-11", "title": "Doodle", "date": "2025", "category": "Sketch", "image": "assets/img/artwork/josie-11.svg", "text": "Add a short note about “Doodle” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-12", "title": "Reverie", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-12.svg", "text": "Add a short note about “Reverie” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-02", "title": "Companions", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-02.svg", "text": "Add a short note about “Companions” here.", "video": null, "youtube": null, "related": null},
-  {"id": "josie-01", "title": "Moonlit", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-01.svg", "text": "Add a short note about “Moonlit” here.", "video": "assets/video/josie-01.mp4", "youtube": null, "related": null},
-  {"id": "josie-05", "title": "Morning", "date": "2024", "category": "Full", "image": "assets/img/artwork/josie-05.svg", "text": "Add a short note about “Morning” here.", "video": null, "youtube": null, "related": null}
+  {"id": "skywards", "title": "Skywards", "date": "2026", "category": "Featured", "image": "assets/img/artwork/skywards.jpg", "text": "", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "untitled_artwork-18", "title": "Untitled_Artwork 18", "date": "2026", "category": "Featured", "image": "assets/img/artwork/untitled_artwork-18.jpg", "text": "", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "untitled_artwork-17", "title": "Untitled_Artwork 17", "date": "2026", "category": "Featured", "image": "assets/img/artwork/untitled_artwork-17.jpg", "text": "", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "image-1", "title": "image", "date": "2026", "category": "", "image": "assets/img/artwork/image-1.jpeg", "text": "", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-03", "title": "Wildflower", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-03.svg", "text": "Add a short note about “Wildflower” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-04", "title": "Stargazer", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-04.svg", "text": "Add a short note about “Stargazer” here.", "video": "assets/video/josie-04.mp4", "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-06", "title": "Quick Study", "date": "2025", "category": "Sketch", "image": "assets/img/artwork/josie-06.svg", "text": "Add a short note about “Quick Study” here.", "video": null, "videoTitle": null, "youtube": null, "related": "josie-12"},
+  {"id": "josie-07", "title": "Gesture", "date": "2024", "category": "Sketch", "image": "assets/img/artwork/josie-07.svg", "text": "Add a short note about “Gesture” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-08", "title": "Daydream", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-08.svg", "text": "Add a short note about “Daydream” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-09", "title": "Linework", "date": "2024", "category": "Sketch", "image": "assets/img/artwork/josie-09.svg", "text": "Add a short note about “Linework” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-10", "title": "Bloom", "date": "2025", "category": "Full", "image": "assets/img/artwork/josie-10.svg", "text": "Add a short note about “Bloom” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-11", "title": "Doodle", "date": "2025", "category": "Sketch", "image": "assets/img/artwork/josie-11.svg", "text": "Add a short note about “Doodle” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-12", "title": "Reverie", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-12.svg", "text": "Add a short note about “Reverie” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-02", "title": "Companions", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-02.svg", "text": "Add a short note about “Companions” here.", "video": null, "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-01", "title": "Moonlit", "date": "2025", "category": "Featured", "image": "assets/img/artwork/josie-01.svg", "text": "Add a short note about “Moonlit” here.", "video": "assets/video/josie-01.mp4", "videoTitle": null, "youtube": null, "related": null},
+  {"id": "josie-05", "title": "Morning", "date": "2024", "category": "Full", "image": "assets/img/artwork/josie-05.svg", "text": "Add a short note about “Morning” here.", "video": null, "videoTitle": null, "youtube": null, "related": null}
 ];

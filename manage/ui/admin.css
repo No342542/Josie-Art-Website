@@ -110,6 +110,9 @@ strong{ font-weight:600; }
 .preview img{ width:100%; max-height:300px; object-fit:contain; background:#f3f1ed; display:block; }
 
 .field{ display:flex; flex-direction:column; gap:6px; }
+.field[hidden]{ display:none; }   /* author .field{display:flex} would otherwise beat the hidden attr */
+.field--sub{ margin-top:4px; }
+.field__label small{ font-weight:400; text-transform:none; letter-spacing:.3px; color:var(--soft); }
 .field__label{ font-family:var(--disp); font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--soft); }
 .input{ font-family:var(--ui); font-size:14.5px; color:var(--ink); background:#fff; border:1px solid var(--line);
   border-radius:9px; padding:10px 12px; width:100%; transition:.15s; }

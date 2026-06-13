@@ -28,7 +28,7 @@
 
   var back = '<a class="detail__back" href="index.html">' + backArrow() + ' Back to gallery</a>';
   var image = '<div class="detail__media"><img class="detail__img" src="' + attr(a.image) + '" alt="' + attr(a.title) + '"></div>';
-  var vid = hasVideo ? player(a) : '';
+  var vid = hasVideo ? paintBlock(a) : '';
   var yt = a.youtube ? youtube(a.youtube) : '';
   var related = a.related ? relatedBlock(a.related) : '';
   var title = '<h1 class="detail__title">' + esc(a.title) + '</h1>';
@@ -52,6 +52,19 @@
   }
 
   if (hasVideo) wirePlayer();
+
+  /* ---------- speed-paint block: the looping player + its title to the RIGHT ----------
+     Mirrors the piece's image/words split: the video sits left, its own title sits
+     to the right. With no videoTitle it's just the player (unchanged look). */
+  function paintBlock(a) {
+    var info = a.videoTitle ?
+      '<div class="detail__paintinfo">' +
+        '<span class="detail__paintlabel">Speed&#8209;paint</span>' +
+        '<h2 class="detail__painttitle">' + esc(a.videoTitle) + '</h2>' +
+      '</div>' : '';
+    return '<div class="detail__paint' + (info ? ' detail__paint--row' : '') + '">' +
+      player(a) + info + '</div>';
+  }
 
   /* ---------- minimal looping player ---------- */
   function player(a) {

@@ -285,6 +285,27 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
   text-transform:uppercase; line-height:1.4; text-align:center; padding:20px;
 }
 
+/* ---------- speed-paint block: video + its title to the right (Josie) ----------
+   The player sits left and grows; its title sits in a fixed column to the right,
+   echoing the piece's image/words split. Stacks under the video on narrow screens. */
+.detail__paint{ margin-top:24px; }
+.detail--split .detail__paint .player{ margin:0; }            /* overrides the lone-player margin above */
+.detail--split .detail__paint--row{ display:flex; gap:30px; align-items:flex-start; }
+.detail--split .detail__paint--row .player{ flex:1 1 auto; min-width:0; }
+.detail__paintinfo{ flex:0 0 200px; padding-top:4px; }
+.detail__paintlabel{
+  font-family:var(--font-display); font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--ink-soft); display:block; margin-bottom:10px;
+}
+.detail__painttitle{
+  font-family:var(--font-display); font-weight:300; letter-spacing:2px; text-transform:uppercase;
+  font-size:17px; line-height:1.35; color:var(--ink); margin:0; overflow-wrap:break-word;
+}
+@media (max-width:860px){
+  .detail--split .detail__paint--row{ flex-direction:column; gap:14px; }
+  .detail__paintinfo{ flex-basis:auto; padding-top:0; }
+}
+
 /* ---------- about page ---------- */
 .about{ max-width:680px; margin:0 auto; text-align:center; }
 .about__body{ color:var(--ink-soft); font-size:20px; line-height:1.8; }

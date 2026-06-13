@@ -22,16 +22,24 @@
       <div class="about__body" id="aboutBody"></div>
     </div>
   </main>
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/ui.js"></script>
   <script>
-    (function () {
+  /* Load CONTENT fresh each visit (beats GitHub Pages' ~10-min cache so edits show
+     right away); then build the sidebar and render the About text. */
+  (function () {
+    function add(src, then) {
+      var s = document.createElement('script');
+      s.src = src; if (then) { s.onload = s.onerror = then; }
+      document.body.appendChild(s);
+    }
+    add('assets/js/data.js?v=' + Date.now(), function () {
+      add('assets/js/ui.js');
       var S = window.SITE || {};
       var b = document.getElementById('aboutBody');
       if (b) (S.about || '').split('\n\n').forEach(function (p) {
         var el = document.createElement('p'); el.textContent = p; b.appendChild(el);
       });
-    })();
+    });
+  })();
   </script>
 </body>
 </html>

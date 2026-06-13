@@ -21,8 +21,21 @@
     <nav class="filters" id="filters" aria-label="Categories"></nav>
     <div class="grid" id="grid"></div>
   </main>
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/ui.js"></script>
-  <script src="assets/js/gallery.js"></script>
+  <script>
+  /* Load gallery CONTENT fresh on every visit. GitHub Pages caches files for ~10 min
+     (max-age=600), which would otherwise delay a newly published photo from showing
+     across browsers/devices/CDN edges. A per-load ?v= on data.js sidesteps that cache;
+     the code files (ui/gallery) load right after and may stay cached (they change rarely). */
+  (function () {
+    function add(src, then) {
+      var s = document.createElement('script');
+      s.src = src; if (then) { s.onload = s.onerror = then; }
+      document.body.appendChild(s);
+    }
+    add('assets/js/data.js?v=' + Date.now(), function () {
+      add('assets/js/ui.js'); add('assets/js/gallery.js');
+    });
+  })();
+  </script>
 </body>
 </html>

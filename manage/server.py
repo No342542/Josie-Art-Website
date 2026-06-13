@@ -415,14 +415,27 @@ class Handler(BaseHTTPRequestHandler):
         rc, status, _ = self._git(["status", "--porcelain"])
         if status:
             self._git(["commit", "-m", "Update " + site_name() + " gallery (Manage tool)"])
+        _, branch, _ = self._git(["rev-parse", "--abbrev-ref", "HEAD"])
+        br = branch or "main"
         code, out, err = self._git(["push"])
         if code != 0:
-            _, branch, _ = self._git(["rev-parse", "--abbrev-ref", "HEAD"])
-            code, out, err = self._git(["push", "-u", "origin", branch or "main"])
+            # Push refused — almost always a "non-fast-forward": the live site moved
+            # ahead (a code update landed, or another device published) so this branch
+            # is behind. Auto-integrate the remote, keeping THIS device's content on any
+            # overlap (you own your gallery's content), then retry — so Publish heals
+            # itself instead of dead-ending. A genuine auth/network failure still falls
+            # through to the message below.
+            f, _, _ = self._git(["fetch", "origin", br])
+            if f == 0:
+                self._git(["merge", "-X", "ours", "--no-edit", "origin/" + br])
+                code, out, err = self._git(["push"])
+                if code != 0:
+                    code, out, err = self._git(["push", "-u", "origin", br])
         if code != 0:
             return self._json(200, {"ok": False, "needsAuth": True,
-                "message": "Couldn't reach GitHub. You may need to sign in to GitHub on this Mac once "
-                           "(see the README). Details:\n\n" + (err or out)})
+                "message": "Couldn't reach GitHub — you may need to sign in on this Mac once "
+                           "(see the README). If an update just landed, close this window, reopen "
+                           "Manage, and Publish again. Details:\n\n" + (err or out)})
         return self._json(200, {"ok": True, "message": "Published! Your live site updates in about a minute."})
 
 

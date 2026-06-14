@@ -204,7 +204,7 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 .detail__meta{ text-align:center; margin:26px 0 4px; }
 .detail__title{
   font-family:var(--font-display); font-weight:300; letter-spacing:3px; text-transform:uppercase;
-  font-size:21px; color:var(--ink); margin:0;
+  font-size:18px; color:var(--ink); margin:0;   /* ~15% smaller (was 21px) */
 }
 .detail__date{
   font-family:var(--font-display); font-size:12px; letter-spacing:2px;
@@ -233,47 +233,37 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 .detail__nav a:hover{ color:var(--ink); }
 .detail__nav span{ visibility:hidden; }
 
-/* ---------- detail: split layout — Josie (each piece = media | title) ----------
-   A "block" (.ablock) pairs one media (art / speed-paint / related) with its title.
-   DESKTOP: 2-col grid — media on the left, its title on the right (the art block also
-   carries the date/IG/comment), so the speed-paint and related titles line up exactly
-   like the main art's. MOBILE: the title moves ABOVE its media; the art's header keeps
-   the title on the left with date + Instagram pushed to the far right (right edge of art). */
-.detail--split .ablock{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 286px;
-  column-gap:48px;
-  align-items:start;
-  margin-top:46px;
-}
+/* ---------- detail: split layout — Josie (stacked at ALL sizes; media uses full width) ----------
+   Desktop AND mobile now use the same stacked layout so the art is never squeezed by a side
+   column — it fills the full content width. Each piece stacks its title ABOVE its media; the
+   art's header is one line (title left; date + Instagram pushed to the far right, the IG icon
+   ending at the art's right edge) and the comment sits directly BELOW the art. The header /
+   comment / video are width-matched to the art via --art-w (set by artwork.js). */
+.detail--split .ablock{ display:grid; grid-template-columns:minmax(0,1fr); margin-top:42px; }
 .detail--split .detail__cols > .ablock:first-child{ margin-top:0; }
-.detail--split .ablock__media{ grid-column:1; min-width:0; }
-.detail--split .ablock__info,
-.detail--split .ablock__title{ grid-column:2; padding-top:6px; }
+.detail--split .ablock__title{ grid-row:1; margin-bottom:14px; width:var(--art-w, 100%); max-width:100%; }
+.detail--split .ablock__media{ grid-row:2; min-width:0; }
 .detail--split .detail__media{ text-align:left; }
 .detail--split .detail__title,
 .detail--split .detail__date,
 .detail--split .detail__text{ text-align:left; }
-.detail--split .detail__date{ margin-top:11px; }
-.detail--split .detail__ig{ margin-top:14px; }
-.detail--split .detail__text{ max-width:none; margin:22px 0 0; }
-@media (max-width:860px){
-  .detail--split .ablock{ grid-template-columns:minmax(0,1fr); column-gap:0; margin-top:32px; }
-  .detail--split .ablock__title{ grid-column:1; grid-row:1; padding-top:0; }
-  .detail--split .ablock__media{ grid-column:1; grid-row:2; }
-  /* art block: header ABOVE the art, comment directly BELOW it. display:contents unwraps
-     the info box so the header and comment become independent grid rows on mobile. */
-  .detail--split .ablock--art .ablock__info{ display:contents; }
-  .detail--split .ablock--art .detail__text{ grid-column:1; grid-row:3; }
-  /* header on one line: title left, date + Instagram pushed to the far right */
-  .detail--split .ablock--art .ablock__head{
-    grid-column:1; grid-row:1;
-    display:flex; align-items:center; gap:10px;
-  }
-  .detail--split .ablock--art .ablock__head .detail__title{ flex:1 1 auto; min-width:0; }
-  .detail--split .ablock--art .ablock__head .detail__date{ margin-top:0; flex:0 0 auto; }
-  .detail--split .ablock--art .ablock__head .detail__ig{ margin-top:0; flex:0 0 auto; }
+
+/* art block: header (row1) above art (row2); comment (row3) directly below the art.
+   display:contents unwraps the info box so head + comment become independent rows. */
+.detail--split .ablock--art .ablock__info{ display:contents; }
+.detail--split .ablock--art .ablock__head{
+  grid-row:1; margin-bottom:16px;
+  display:flex; align-items:center; gap:12px;
+  width:var(--art-w, 100%); max-width:100%;
 }
+.detail--split .ablock--art .ablock__head .detail__title{ flex:1 1 auto; min-width:0; }
+.detail--split .ablock--art .ablock__head .detail__date{ flex:0 0 auto; margin-top:0; }
+.detail--split .ablock--art .ablock__head .detail__ig{ flex:0 0 auto; margin-top:0; }
+.detail--split .ablock--art .detail__text{
+  grid-row:3; width:var(--art-w, 100%); max-width:100%; margin:22px 0 0;
+}
+/* speed-paint video matched to the art's width */
+.detail--split .ablock--paint .player{ width:var(--art-w, 100%); max-width:100%; }
 
 /* ---------- YouTube embed ---------- */
 .detail__yt{ position:relative; width:100%; max-width:1040px; margin:26px auto 0; aspect-ratio:16/9; background:#0d0d0e; overflow:hidden; }

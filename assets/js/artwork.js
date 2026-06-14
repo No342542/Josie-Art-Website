@@ -68,21 +68,22 @@
 
   if (hasVideo) wirePlayer();
 
-  // Match the speed-paint video's width to the main art's displayed width. A
-  // ResizeObserver on the art keeps them in sync across window resizes / rotation.
+  // Publish the main art's displayed width as --art-w so the header (title + date/IG),
+  // the comment and the speed-paint video can be matched to it (IG ends at the art's
+  // right edge). A ResizeObserver keeps it in sync across window resizes / rotation.
   var mainImg = root.querySelector('.detail__img');
   if (mainImg) {
-    mainImg.addEventListener('load', sizeVideoToArt);
-    if (mainImg.complete) sizeVideoToArt();
-    if (window.ResizeObserver) new ResizeObserver(sizeVideoToArt).observe(mainImg);
+    mainImg.addEventListener('load', sizeToArt);
+    if (mainImg.complete) sizeToArt();
+    if (window.ResizeObserver) new ResizeObserver(sizeToArt).observe(mainImg);
   }
-  window.addEventListener('resize', sizeVideoToArt);
-  function sizeVideoToArt() {
-    var im = root.querySelector('.detail__img'), vid = root.querySelector('.ablock--paint .player');
-    if (!im || !vid) return;
-    vid.style.width = '';                                 // reset first so the video can't influence the art's measured width
+  window.addEventListener('resize', sizeToArt);
+  function sizeToArt() {
+    var im = root.querySelector('.detail__img');
+    if (!im) return;
+    root.style.removeProperty('--art-w');                 // reset so the art measures its natural width
     var w = im.getBoundingClientRect().width;
-    if (w) vid.style.width = Math.round(w) + 'px';
+    if (w) root.style.setProperty('--art-w', Math.round(w) + 'px');
   }
 
   /* ---------- speed-paint block: video + Josie's own title ----------
